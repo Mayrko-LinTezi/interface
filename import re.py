@@ -11,12 +11,20 @@ class Date:
 
 
 @dataclass
+class RGB:
+    red: int
+    green: int
+    blue: int
+
+
+@dataclass
 class Patient:
     passport: str
     name: str
     birth_date: Date
     phone: str
     temperature: float
+    skin_color: RGB
 
 
 
@@ -82,6 +90,27 @@ def read_temperature():
             print("Ошибка! Введите корректное число.")
 
 
+def read_skin_color():
+    while True:
+        input_data = input("Введите цвет кожи в формате RGB (например, 198, 134, 66): ")
+        components = [component.strip() for component in input_data.split(",")]
+
+        if len(components) != 3:
+            print("Ошибка! Введите три значения RGB через запятую.")
+            continue
+
+        try:
+            red, green, blue = (int(component) for component in components)
+        except ValueError:
+            print("Ошибка! Значения RGB должны быть целыми числами.")
+            continue
+
+        if all(0 <= component <= 255 for component in (red, green, blue)):
+            return RGB(red=red, green=green, blue=blue)
+
+        print("Ошибка! Значения RGB должны быть в диапазоне от 0 до 255.")
+
+
 
 def main():
     print("Введите данные о пациенте")
@@ -91,7 +120,8 @@ def main():
         name=read_name(),
         birth_date=read_birth_date(),
         phone=read_phone(),
-        temperature=read_temperature()
+        temperature=read_temperature(),
+        skin_color=read_skin_color()
     )
 
     print("\nДанные пациента")
@@ -107,6 +137,12 @@ def main():
 
     print(f"Телефон: {patient.phone}")
     print(f"Температура: {patient.temperature:.2f}")
+    print(
+        f"Цвет кожи (RGB): "
+        f"{patient.skin_color.red}, "
+        f"{patient.skin_color.green}, "
+        f"{patient.skin_color.blue}"
+    )
 
     print("\nВыход")
     input("Нажмите Enter для выхода...")
